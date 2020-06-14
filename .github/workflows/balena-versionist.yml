@@ -1,0 +1,17 @@
+name: Run balena versionist
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  test-job:
+     runs-on: ubuntu-latest
+     steps: 
+     - uses: actions/checkout@v1
+     - name: balena-versionist
+       uses: ./
+       with:
+        github_email: ${{ secrets.GITHUB_EMAIL }}
+        github_username: ${{ secrets.GITHUB_USERNAME }}
+        github_token: ${{ secrets.GITHUB_TOKEN }}
