@@ -1,15 +1,15 @@
-name: 'Hello World'
-description: 'Greet someone and record the time'
+name: 'Balena versionist'
+description: 'Versioning done easy.'
 inputs:
-  who-to-greet:  # id of input
-    description: 'Who to greet'
+  github_email:
+    description: 'GitHub email. Can be passed in using $\{{ secrets.GITHUB_EMAIL }}'
     required: true
-    default: 'World'
-outputs:
-  time: # id of output
-    description: 'The time we greeted you'
+  github_username:
+    description: 'GitHub username. Can be passed in using $\{{ secrets.GITHUB_USERNAME }}'
+    required: true
+  github_token:
+    description: 'Token for the repo. Can be passed in using $\{{ secrets.GITHUB_TOKEN }}'
+    required: true
 runs:
   using: 'docker'
   image: 'Dockerfile'
-  args:
-    - ${{ inputs.who-to-greet }}
