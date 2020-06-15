@@ -12,6 +12,6 @@ jobs:
      - name: balena-versionist
        uses: ./
        with:
-        github_email: ${{ secrets.GITHUB_EMAIL }}
-        github_username: ${{ secrets.GITHUB_USERNAME }}
+        github_email: 'tomasmigone@gmail.com'
+        github_username: 'Tomás Migone'
         github_token: ${{ secrets.GITHUB_TOKEN }}
