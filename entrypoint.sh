@@ -1,6 +1,8 @@
 #!/bin/sh -l
 set -e
 
+printenv
+
 # Ensure we have a repo.yml file
 if [ ! -f repo.yml ]; then
   echo "repo.yml not found, creating generic..."
@@ -26,4 +28,4 @@ git config --local user.name "$INPUT_GITHUB_USERNAME"
 git add .
 git commit -m "$VERSION"
 git tag -a "$VERSION" -m "$VERSION"
-git push "https://${GITHUB_ACTOR}:${INPUT_GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" --follow-tags
+git push "https://${GITHUB_ACTOR}:${INPUT_GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:master --follow-tags
