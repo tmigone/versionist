@@ -1,5 +1,10 @@
 name: 'Balena versionist'
 description: 'Opinionated versioning by balena'
+author: 'tmigone'
+branding:
+  color: 'yellow'
+  icon: 'tag'
+
 inputs:
   github_email:
     description: 'GitHub email to use for commits.'
