@@ -38,12 +38,11 @@ on:
 
 jobs:
   balena-versionist:
-     runs-on: ubuntu-latest
-     steps: 
-     - uses: actions/checkout@v1
-     - name: Run balena-versionist
-       uses: ./
-       with:
+    runs-on: ubuntu-latest
+    steps: 
+    - uses: actions/checkout@v1
+    - uses: tmigone/balena-versionist-action@latest
+      with:
         github_email: 'tomasmigone@gmail.com'
         github_username: 'Tomás Migone'
         github_token: ${{ secrets.GITHUB_TOKEN }}
