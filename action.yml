@@ -1,14 +1,14 @@
 name: 'Balena versionist'
-description: 'Versioning done easy.'
+description: 'Opinionated versioning by balena'
 inputs:
   github_email:
-    description: 'GitHub email. Can be passed in using $\{{ secrets.GITHUB_EMAIL }}'
+    description: 'GitHub email to use for commits.'
     required: true
   github_username:
-    description: 'GitHub username. Can be passed in using $\{{ secrets.GITHUB_USERNAME }}'
+    description: 'GitHub username to use for commits.'
     required: true
   github_token:
-    description: 'Token for the repo. Can be passed in using $\{{ secrets.GITHUB_TOKEN }}'
+    description: 'GitHub token to use for commits. Can be passed in using $\{{ secrets.GITHUB_TOKEN }}'
     required: true
 runs:
   using: 'docker'

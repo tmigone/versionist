@@ -1,8 +1,6 @@
 #!/bin/sh -l
 set -e
 
-printenv
-
 # Ensure we have a repo.yml file
 if [ ! -f repo.yml ]; then
   echo "repo.yml not found, creating generic..."

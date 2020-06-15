@@ -1,23 +1,50 @@
-# Hello world docker action
+# balena-versionist GitHub action
 
-This action prints "Hello World" to the log or "Hello" + the name of a person to greet. To learn how this action was built, see "[Creating a Docker container action](https://help.github.com/en/articles/creating-a-docker-container-action)" in the GitHub Help documentation.
+This action provides automatic versioning and changelog generation by running `balena-versionist` utility.
+
+In a nutshell, this action will:
+
+- Run `balena-versionist`. This will update `CHANGELOG.md`, `VERSION`, `package.json`, etc files accordingly.
+- Commit changes
+- Create tag corresponding to the new version
+- Push changes and tags to master
+
+Read more about versionist here:
+- [versionist](https://github.com/balena-io/versionist)
+- [balena-versionist](https://github.com/balena-io/balena-versionist)
 
 ## Inputs
 
-### `who-to-greet`
+### `github_email`
 
-**Required** The name of the person to greet. Default `"World"`.
+**Required** The email address to be associated with the generated commits.
 
-## Outputs
+### `github_username`
 
-### `time`
+**Required** The username to be associated with the generated commits.
 
-The time we greeted you.
+### `github_token`
+
+**Required** The GitHub token to authenticate. Can be passed in using `${{ secrets.GITHUB_TOKEN }}`
 
 ## Example usage
 
 ```yaml
-uses: actions/hello-world-docker-action@master
-with:
-  who-to-greet: 'Mona the Octocat'
+name: Run balena versionist
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  balena-versionist:
+     runs-on: ubuntu-latest
+     steps: 
+     - uses: actions/checkout@v1
+     - name: Run balena-versionist
+       uses: ./
+       with:
+        github_email: 'tomasmigone@gmail.com'
+        github_username: 'Tomás Migone'
+        github_token: ${{ secrets.GITHUB_TOKEN }}
 ```
