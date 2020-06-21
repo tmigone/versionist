@@ -41,7 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     steps: 
     - uses: actions/checkout@v1
-    - uses: tmigone/balena-versionist-action@latest
+    - uses: tmigone/balena-versionist-action@master
       with:
         github_email: 'tomasmigone@gmail.com'
         github_username: 'Tomás Migone'
