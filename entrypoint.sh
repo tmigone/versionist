@@ -38,7 +38,7 @@ balena-versionist
 
 # Log new version
 get_version
-echo "New version:"$VERSION
+echo "New version: "$VERSION
 
 # Commit and push changes
 git config --local user.email "$INPUT_GITHUB_EMAIL"
