@@ -27,10 +27,6 @@ fi
 get_version
 echo "Current version: "$VERSION
 
-NPM_TOKEN=299ef2cd-a372-41bd-9867-30d585f42b8f
-echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
-npm whoami
-
 # Ensure we have a repo.yml file
 if [[ ! -f package.json && ! -f repo.yml ]]; then
   echo "No package.json or repo.yml found, creating generic type project..."
@@ -50,10 +46,11 @@ git config --local user.name "$INPUT_GITHUB_USERNAME"
 git add .
 git commit -m "$VERSION"
 git tag -a "$VERSION" -m "$VERSION"
-git push HEAD:"$INPUT_BRANCH" --follow-tags "$DRY_RUN_OPTION"
+git push "https://${GITHUB_ACTOR}:${INPUT_GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:"$INPUT_BRANCH" --follow-tags "$DRY_RUN_OPTION"
 
 # Push to NPM if a token was provided
 if [[ -n $INPUT_NPM_TOKEN ]]; then
   echo "Publishing to NPM..."
+  echo "//registry.npmjs.org/:_authToken=${INPUT_NPM_TOKEN}" > .npmrc
   npm publish "$INPUT_NPM_ACCESS" "$DRY_RUN_OPTION"
 fi
