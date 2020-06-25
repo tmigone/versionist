@@ -1,4 +1,4 @@
-name: Run balena versionist
+name: Run versionist action
 on:
   push:
     branches:
