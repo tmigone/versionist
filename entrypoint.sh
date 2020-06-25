@@ -1,17 +1,35 @@
 #!/bin/sh -l
 set -e
 
+# Helpers
 function get_version () {
   # Get version
-  if [[ -f "VERSION" ]]; then
+  if [[ -f VERSION ]]; then
     VERSION="v$(cat VERSION)"
-  elif [[ -f "package.json" ]]; then
+  elif [[ -f package.json ]]; then
     VERSION="v$(jq -r .version package.json)"
   else
     echo "No VERSION or package.json file to get version from."
-    exit 1
   fi
 }
+
+# Defaults
+INPUT_BRANCH=${INPUT_BRANCH:-master}
+INPUT_NPM_ACCESS=${INPUT_NPM_ACCESS:-public}
+
+# Dry run when running in development
+if [[ $GITHUB_ACTOR == "nektos/act" ]]; then
+  echo "--- Dry run ---"
+  DRY_RUN_OPTION="--dry-run"
+fi
+
+# Log current version
+get_version
+echo "Current version: "$VERSION
+
+NPM_TOKEN=299ef2cd-a372-41bd-9867-30d585f42b8f
+echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
+npm whoami
 
 # Ensure we have a repo.yml file
 if [[ ! -f package.json && ! -f repo.yml ]]; then
@@ -19,22 +37,23 @@ if [[ ! -f package.json && ! -f repo.yml ]]; then
   echo "type: generic" > repo.yml
 fi
 
-get_version
-echo "Current version: "$VERSION
-
 # Run versionist
 balena-versionist
 
+# Log new version
 get_version
 echo "New version:"$VERSION
 
-# # Commit and push changes
-# git config --local user.email "$INPUT_GITHUB_EMAIL"
-# git config --local user.name "$INPUT_GITHUB_USERNAME"
-# git add .
-# git commit -m "$VERSION"
-# git tag -a "$VERSION" -m "$VERSION"
-# git push "https://${GITHUB_ACTOR}:${INPUT_GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:master --follow-tags
+# Commit and push changes
+git config --local user.email "$INPUT_GITHUB_EMAIL"
+git config --local user.name "$INPUT_GITHUB_USERNAME"
+git add .
+git commit -m "$VERSION"
+git tag -a "$VERSION" -m "$VERSION"
+git push HEAD:"$INPUT_BRANCH" --follow-tags "$DRY_RUN_OPTION"
 
 # Push to NPM if a token was provided
-# npm publish
+if [[ -n $INPUT_NPM_TOKEN ]]; then
+  echo "Publishing to NPM..."
+  npm publish "$INPUT_NPM_ACCESS" "$DRY_RUN_OPTION"
+fi

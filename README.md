@@ -1,19 +1,24 @@
-# balena-versionist GitHub action
+# versionist GitHub action
 
-This action provides automatic versioning and changelog generation by running `balena-versionist` utility.
-
-In a nutshell, this action will:
+This action provides automatic versioning, changelog generation and npm publishing.
+ 
+The following actions are taken sequentially:
 
 - Run `balena-versionist`. This will update `CHANGELOG.md`, `VERSION`, `package.json`, etc files accordingly.
-- Commit changes
-- Create tag corresponding to the new version
+- Add a new commit to the working branch with the versioning changes
+- Create a release tag corresponding to the new version
 - Push changes and tags to master
+- For node packages, if an NPM auto token is provided: publish package to NPM
 
-Read more about versionist here:
+Read more about the opinionated versioning here:
 - [versionist](https://github.com/balena-io/versionist)
 - [balena-versionist](https://github.com/balena-io/balena-versionist)
 
 ## Inputs
+
+### `branch`
+
+**Not required** NPM token to use for publishing to the NPM registry.
 
 ### `github_email`
 
@@ -27,10 +32,15 @@ Read more about versionist here:
 
 **Required** The GitHub token to authenticate. Can be passed in using `${{ secrets.GITHUB_TOKEN }}`
 
+### `npm_token`
+
+**Not required** NPM token to use for publishing to the NPM registry.
+
+
 ## Example usage
 
 ```yaml
-name: Run balena versionist
+name: Run versionist
 on:
   push:
     branches:
@@ -41,9 +51,10 @@ jobs:
     runs-on: ubuntu-latest
     steps: 
     - uses: actions/checkout@v1
-    - uses: tmigone/balena-versionist-action@master
+    - uses: tmigone/versionist-action@master
       with:
         github_email: 'tomasmigone@gmail.com'
         github_username: 'Tomás Migone'
         github_token: ${{ secrets.GITHUB_TOKEN }}
+        npm_token: ${{ secrets.NPM_TOKEN }}
 ```

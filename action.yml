@@ -1,11 +1,15 @@
-name: 'Balena versionist'
-description: 'Opinionated versioning by balena'
+name: 'Versionist'
+description: 'Opinionated versioning using balena-versionist'
 author: 'tmigone'
 branding:
   color: 'yellow'
   icon: 'tag'
 
 inputs:
+  branch:
+    description: 'Destination branch to push changes'
+    required: false
+    default: 'master'
   github_email:
     description: 'GitHub email to use for commits.'
     required: true
@@ -15,6 +19,9 @@ inputs:
   github_token:
     description: 'GitHub token to use for commits. Can be passed in using $\{{ secrets.GITHUB_TOKEN }}'
     required: true
+  npm_token:
+    description: 'NPM token to use for publishing to the NPM registry.'
+    required: false
 runs:
   using: 'docker'
   image: 'Dockerfile'
