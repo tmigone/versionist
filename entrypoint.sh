@@ -48,11 +48,9 @@ git config --local user.name "$INPUT_GITHUB_USERNAME"
 git add .
 git commit -m "$VERSION"
 git tag -a "$VERSION" -m "$VERSION"
-echo "$GITHUB_ACTOR"
-echo "$INPUT_GITHUB_TOKEN"
-echo "https://${GITHUB_ACTOR}:${INPUT_GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" 
-echo "HEAD:$INPUT_BRANCH --follow-tags $DRY_RUN_OPTION"
-git push "https://${GITHUB_ACTOR}:${INPUT_GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:"$INPUT_BRANCH" --follow-tags "$DRY_RUN_OPTION"
+REPO_URL="https://${GITHUB_ACTOR}:${INPUT_GITHUB_TOKEN}@github.com/${REPOSITORY}.git"
+echo "${REPO_URL}"
+git push "${REPO_URL}" HEAD:"${INPUT_BRANCH}" --follow-tags "$DRY_RUN_OPTION"
 
 # Push to NPM if a token was provided
 if [[ -n $INPUT_NPM_TOKEN ]]; then
