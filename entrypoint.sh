@@ -49,12 +49,11 @@ git config --local user.name "$INPUT_GITHUB_USERNAME"
 git add .
 git commit -m "$VERSION"
 git tag -a "$VERSION" -m "$VERSION"
-echo $REPO_URL
 git push "${REPO_URL}" HEAD:${INPUT_BRANCH} --follow-tags $DRY_RUN_OPTION
 
 # Push to NPM if a token was provided
-if [[ -n $INPUT_NPM_TOKEN ]]; then
+if [[ -n "$INPUT_NPM_TOKEN" ]]; then
   echo "Publishing to NPM..."
   echo "//registry.npmjs.org/:_authToken=${INPUT_NPM_TOKEN}" > .npmrc
-  npm publish "$INPUT_NPM_ACCESS" "$DRY_RUN_OPTION"
+  npm publish "--access $INPUT_NPM_ACCESS" "$DRY_RUN_OPTION"
 fi
