@@ -18,6 +18,7 @@ function get_version () {
 # Defaults
 INPUT_BRANCH=${INPUT_BRANCH:-master}
 INPUT_NPM_ACCESS=${INPUT_NPM_ACCESS:-public}
+REPO_URL="https://${GITHUB_ACTOR}:${INPUT_GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
 
 # Dry run when running in development
 if [[ $GITHUB_ACTOR == "nektos/act" ]]; then
@@ -48,9 +49,8 @@ git config --local user.name "$INPUT_GITHUB_USERNAME"
 git add .
 git commit -m "$VERSION"
 git tag -a "$VERSION" -m "$VERSION"
-REPO_URL="https://${GITHUB_ACTOR}:${INPUT_GITHUB_TOKEN}@github.com/${REPOSITORY}.git"
-echo "${REPO_URL}"
-git push "${REPO_URL}" HEAD:"${INPUT_BRANCH}" --follow-tags "$DRY_RUN_OPTION"
+echo $REPO_URL
+git push "${REPO_URL}" HEAD:${INPUT_BRANCH} --follow-tags $DRY_RUN_OPTION
 
 # Push to NPM if a token was provided
 if [[ -n $INPUT_NPM_TOKEN ]]; then
