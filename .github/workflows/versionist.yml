@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps: 
     - uses: actions/checkout@v1
-    - name: Run balena-versionist
+    - name: Run versionist
       uses: ./
       with:
         github_email: 'tomasmigone@gmail.com'
