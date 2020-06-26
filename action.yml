@@ -20,8 +20,12 @@ inputs:
     description: 'GitHub token to use for commits. Can be passed in using $\{{ secrets.GITHUB_TOKEN }}'
     required: true
   npm_token:
-    description: 'NPM token to use for publishing to the NPM registry.'
+    description: 'NPM token to use for publishing to the NPM registry. Use secrets to provide the token.'
     required: false
+  npm_access:
+    description: 'NPM access level: public/private. Note that you require a paid account to publish a private package.'
+    required: false
+    default: 'public'
 runs:
   using: 'docker'
   image: 'Dockerfile'
