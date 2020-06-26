@@ -47,7 +47,7 @@ on:
       - master
 
 jobs:
-  balena-versionist:
+  versionist:
     runs-on: ubuntu-latest
     steps: 
     - uses: actions/checkout@v1

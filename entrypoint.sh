@@ -1,8 +1,6 @@
 #!/bin/sh -l
 set -e
 
-printenv
-
 # Helpers
 function get_version () {
   # Get version
