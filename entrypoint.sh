@@ -53,8 +53,9 @@ fi
 
 # Push to NPM if a token was provided
 if [[ -n "$INPUT_NPM_TOKEN" ]]; then
-  echo "Publishing to NPM..."
   echo "//registry.npmjs.org/:_authToken=${INPUT_NPM_TOKEN}" > .npmrc
+  echo "unsafe-perm = true" >> .npmrc
+  echo "Publishing to NPM..."
   echo "Publishing as: "$(npm whoami)
   echo "Access: "$INPUT_NPM_ACCESS
   npm publish "--access $INPUT_NPM_ACCESS" $DRY_RUN_OPTION
