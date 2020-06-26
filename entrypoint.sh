@@ -59,5 +59,5 @@ if [[ -n "$INPUT_NPM_TOKEN" ]]; then
   echo "Publishing as: "$(npm whoami)
   echo "Access: "$INPUT_NPM_ACCESS
   npm install
-  npm publish "--access $INPUT_NPM_ACCESS" $DRY_RUN_OPTION
+  npm publish --access $INPUT_NPM_ACCESS $DRY_RUN_OPTION
 fi
