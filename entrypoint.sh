@@ -55,5 +55,6 @@ fi
 if [[ -n "$INPUT_NPM_TOKEN" ]]; then
   echo "Publishing to NPM..."
   echo "//registry.npmjs.org/:_authToken=${INPUT_NPM_TOKEN}" > .npmrc
-  npm publish "--access $INPUT_NPM_ACCESS" "$DRY_RUN_OPTION"
+  echo "Publishing as: "$(npm whoami)
+  npm publish "--access $INPUT_NPM_ACCESS" $DRY_RUN_OPTION
 fi
