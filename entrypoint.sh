@@ -47,7 +47,9 @@ git config --local user.name "$INPUT_GITHUB_USERNAME"
 git add .
 git commit -m "$VERSION"
 git tag -a "$VERSION" -m "$VERSION"
-git push "${REPO_URL}" HEAD:${INPUT_BRANCH} --follow-tags $DRY_RUN_OPTION
+if [[ -z $DRY_RUN_OPTION ]]; then
+  git push "${REPO_URL}" HEAD:${INPUT_BRANCH} --follow-tags
+fi
 
 # Push to NPM if a token was provided
 if [[ -n "$INPUT_NPM_TOKEN" ]]; then
