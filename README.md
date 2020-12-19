@@ -1,6 +1,6 @@
 # versionist GitHub action
 
-This action provides automatic versioning, changelog generation and npm publishing.
+This action provides automatic Semver versioning, changelog generation and continuous delivery for NPM and docker projects.
  
 The following actions are taken sequentially:
 
@@ -30,7 +30,7 @@ Read more about the opinionated versioning here:
 
 ### `github_token`
 
-**Required** The GitHub token to authenticate. Can be passed in using `${{ secrets.GITHUB_TOKEN }}`
+**Required** The GitHub token to authenticate. Automatically set with `${{ secrets.GITHUB_TOKEN }}`. This is required to push the version update and tag.
 
 ### `npm_token`
 
@@ -51,7 +51,7 @@ jobs:
     runs-on: ubuntu-latest
     steps: 
     - uses: actions/checkout@v1
-    - uses: tmigone/versionist-action@master
+    - uses: tmigone/versionist@master
       with:
         github_email: 'tomasmigone@gmail.com'
         github_username: 'Tomás Migone'
