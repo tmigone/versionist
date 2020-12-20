@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
-printenv
+
 # get_version: gets the current project version based on repository files. File priority is:
 # - VERSION file
 # - package.json file
@@ -60,14 +60,16 @@ function run_versionist () {
 
   # Run versionist
   balena-versionist
-  echo "- New version: $(get_version)"
+  local NEW_VERSION=$(get_version)
+
+  echo "- New version: $NEW_VERSION"
 
   # Commit and push changes
   git config --local user.email "$INPUT_GITHUB_EMAIL"
   git config --local user.name "$INPUT_GITHUB_USERNAME"
   git add .
-  git commit -m "$VERSION"
-  git tag -a "$VERSION" -m "$VERSION"
+  git commit -m "$NEW_VERSION"
+  git tag -a "$NEW_VERSION" -m "$NEW_VERSION"
   if [[ -z $DRY_RUN ]]; then
     git push "${REPO_URL}" HEAD:${INPUT_BRANCH} --follow-tags
   fi
