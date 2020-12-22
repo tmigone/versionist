@@ -25,6 +25,26 @@ function check_repo_yml () {
   fi
 }
 
+# check_required_inputs: checks for required inputs, exits if not present
+function check_required_inputs () {
+  if [[ -z "$DRY_RUN" ]]; then
+    if [[ -z "$INPUT_GITHUB_EMAIL" ]]; then
+      echo "ERROR: INPUT_GITHUB_EMAIL is required!"
+      exit 0
+    fi
+
+    if [[ -z "$INPUT_GITHUB_USERNAME" ]]; then
+      echo "ERROR: INPUT_GITHUB_USERNAME is required!"
+      exit 0
+    fi
+
+    if [[ -z "$INPUT_GITHUB_TOKEN" ]]; then
+      echo "ERROR: INPUT_GITHUB_TOKEN is required!"
+      exit 0
+    fi
+  fi
+}
+
 # get_repo_type: gets the repository type from repo.yml
 function get_repo_type () {
   local REPO_TYPE=generic
@@ -42,19 +62,23 @@ function run_versionist () {
   local CURRENT_VERSION=$(get_version)
 
   echo "Running balena-versionist..."
-  echo "- Current version: $CURRENT_VERSION"
+  echo "Current version: $CURRENT_VERSION"
+
+  # Setup GitHub
+  git config --local user.email "$INPUT_GITHUB_EMAIL"
+  git config --local user.name "$INPUT_GITHUB_USERNAME"
 
   # Create annotated tag for current version if it does not exist
   local CHECK_TAG_EXISTS=$(git tag | grep "$CURRENT_VERSION")
   if [[ -z "$CHECK_TAG_EXISTS" ]]; then
-    echo "- Tag for $CURRENT_VERSION not found. Creating it..."
+    echo "Tag for $CURRENT_VERSION not found. Creating it..."
     git tag -a "$CURRENT_VERSION" -m "$CURRENT_VERSION"
   fi
 
   # Bail if there are no changes with "Change-type" footer
   local CHECK_CHANGE_TYPE=$(git log "$CURRENT_VERSION"..HEAD | grep "Change-type")
   if [[ -z "$CHECK_CHANGE_TYPE" ]]; then
-    echo "- No commits were annotated with a change type since version $CURRENT_VERSION. Exiting..."
+    echo "No commits were annotated with a change type since version $CURRENT_VERSION. Exiting..."
     exit 0
   fi
 
@@ -62,11 +86,9 @@ function run_versionist () {
   balena-versionist
   local NEW_VERSION=$(get_version)
 
-  echo "- New version: $NEW_VERSION"
+  echo "New version: $NEW_VERSION"
 
   # Commit and push changes
-  git config --local user.email "$INPUT_GITHUB_EMAIL"
-  git config --local user.name "$INPUT_GITHUB_USERNAME"
   git add .
   git commit -m "$NEW_VERSION"
   git tag -a "$NEW_VERSION" -m "$NEW_VERSION"
@@ -76,23 +98,8 @@ function run_versionist () {
   
 }
 
-# run_npm_publish: Publish package to NPM if repo type is 'node' and a NPM token was provided.
-function run_npm_publish () {
-  local REPO_TYPE=$(get_repo_type)
-  if [[ "$REPO_TYPE" == 'node' && -n "$INPUT_NPM_TOKEN" ]]; then
-    echo "//registry.npmjs.org/:_authToken=${INPUT_NPM_TOKEN}" > .npmrc
-    echo "unsafe-perm = true" >> .npmrc
-    echo "Publishing to NPM..."
-    echo "- Publishing as: "$(npm whoami)
-    echo "- Access: "$INPUT_NPM_ACCESS
-    npm install
-    npm publish --access $INPUT_NPM_ACCESS $DRY_RUN
-  fi
-}
-
 # Defaults
 INPUT_BRANCH=${INPUT_BRANCH:-master}
-INPUT_NPM_ACCESS=${INPUT_NPM_ACCESS:-public}
 REPO_URL="https://${GITHUB_ACTOR}:${INPUT_GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
 
 # development: Dry run when running in development
@@ -101,12 +108,16 @@ if [[ $GITHUB_ACTOR == "nektos/act" ]]; then
 fi
 
 # Initialize
+check_required_inputs
 check_repo_yml
 
 echo "--- Versionist ---"
 [[ -n "$DRY_RUN" ]] && echo "Running in dry run mode: no actions will be commited."
 echo "Current version: $(get_version)"
 echo "Repository type: $(get_repo_type)"
+echo "Repository branch: $INPUT_BRANCH"
+echo "GitHub user: $INPUT_GITHUB_USERNAME"
+echo "GitHub email: $INPUT_GITHUB_EMAIL"
+echo "GitHub token: ok!"
 
 run_versionist
-run_npm_publish
