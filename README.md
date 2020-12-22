@@ -48,6 +48,8 @@ jobs:
     steps: 
     - name: Checkout project
       uses: actions/checkout@v2
+      with:
+        fetch-depth: 0                            # We need all commits and tags
     - name: Run versionist
       uses: tmigone/versionist@master
       with:
