@@ -46,12 +46,14 @@ jobs:
   versionist:
     runs-on: ubuntu-latest
     steps: 
-    - uses: actions/checkout@v1
-    - uses: tmigone/versionist@master
+    - name: Checkout project
+      uses: actions/checkout@v2
+    - name: Run versionist
+      uses: tmigone/versionist@master
       with:
         github_email: 'tomasmigone@gmail.com'
         github_username: 'Tomás Migone'
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+        github_token: ${{ secrets.GITHUB_TOKEN }} # This token is automatically provided by Actions, you do not need to create your own token
 ```
 
 You should include at least one commit with a `Change-type: patch | minor | major` footer tag in the comments, example:
