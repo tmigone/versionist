@@ -68,14 +68,9 @@ function run_versionist () {
   git config --local user.email "$INPUT_GITHUB_EMAIL"
   git config --local user.name "$INPUT_GITHUB_USERNAME"
 
-  # Create annotated tag for current version if it does not exist
-  local CHECK_TAG_EXISTS=$(git tag | grep "$CURRENT_VERSION")
-  if [[ -z "$CHECK_TAG_EXISTS" ]]; then
-    echo "Tag for $CURRENT_VERSION not found. Creating it..."
-    git tag -a "$CURRENT_VERSION" -m "$CURRENT_VERSION"
-  fi
 
-  # Bail if there are no changes with "Change-type" footer
+  # Check if there are changes with the "Change-type" footer
+  create_tag_if_not_exists "$CURRENT_VERSION"
   local CHECK_CHANGE_TYPE=$(git log "$CURRENT_VERSION"..HEAD | grep "Change-type")
   if [[ -z "$CHECK_CHANGE_TYPE" ]]; then
     echo "No commits were annotated with a change type since version $CURRENT_VERSION. Exiting..."
@@ -85,17 +80,26 @@ function run_versionist () {
   # Run versionist
   balena-versionist
   local NEW_VERSION=$(get_version)
-
   echo "New version: $NEW_VERSION"
 
   # Commit and push changes
   git add .
   git commit -m "$NEW_VERSION"
-  git tag -a "$NEW_VERSION" -m "$NEW_VERSION"
+  create_tag_if_not_exists "$NEW_VERSION"
   if [[ -z $DRY_RUN ]]; then
     git push "${REPO_URL}" HEAD:${INPUT_BRANCH} --follow-tags
   fi
-  
+
+}
+
+# create_tag_if_not_exists: creates an annotated tag for the given version if it does not exist
+function create_tag_if_not_exists () {
+  local VERSION=$1
+  local CHECK_TAG_EXISTS=$(git tag | grep "$VERSION")
+  if [[ -z "$CHECK_TAG_EXISTS" ]]; then
+    echo "Tag for $VERSION not found. Creating it..."
+    git tag -a "$VERSION" -m "$VERSION"
+  fi
 }
 
 # Defaults
