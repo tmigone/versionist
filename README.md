@@ -79,6 +79,10 @@ feature: Fixed a bug with xyz
 Change-type: patch
 ```
 
+### Branch protection
+
+Currently it's not possible to use versionist on branches that have branch protection enabled. It might be possible to do so if the repository is part of an organization and not a personal one, but I haven't tested it yet. 
+
 ## Inputs
 
 ### `branch`
