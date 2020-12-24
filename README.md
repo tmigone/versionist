@@ -16,7 +16,7 @@ Read more about the opinionated versioning here:
 ## Example usage
 
 ### GitHub Service account
-First you'll need to create a GitHub service account and grant it `Collaborator` access to the target repository. This can be any GitHub account though we recommend to use a dedicated one just for this task. You'll need to take note of the account's email address, username and create a GitHub [Personal Access Token](https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token).
+First you'll need to create a GitHub service account and grant it `Collaborator` access to the target repository. This can be any GitHub account though we recommend to use a dedicated one just for this task. You'll need to take note of the account's email address, username and create a GitHub [Personal Access Token](https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token) with `repo` access.
 
 ### Configuring the workflow
 Next, configure your workflow. Here is an example:

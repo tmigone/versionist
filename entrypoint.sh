@@ -73,7 +73,7 @@ function run_versionist () {
   local CHECK_CHANGE_TYPE=$(git log "$CURRENT_VERSION"..HEAD | grep "Change-type")
   if [[ -z "$CHECK_CHANGE_TYPE" ]]; then
     echo "No commits were annotated with a change type since version $CURRENT_VERSION. Exiting..."
-    exit 1
+    exit 0
   fi
 
   # Run versionist
@@ -88,6 +88,10 @@ function run_versionist () {
   if [[ -z $DRY_RUN ]]; then
     git push "${REPO_URL}" HEAD:${INPUT_BRANCH} --follow-tags
   fi
+
+  # Set outputs
+  echo "::set-output name=version::$(get_version)"
+  echo "::set-output name=updated::true"
 
 }
 
@@ -122,5 +126,8 @@ echo "Repository branch: $INPUT_BRANCH"
 echo "GitHub user: $INPUT_GITHUB_USERNAME"
 echo "GitHub email: $INPUT_GITHUB_EMAIL"
 echo "GitHub token: ok!"
+
+echo "::set-output name=version::$(get_version)"
+echo "::set-output name=updated::false"
 
 run_versionist
