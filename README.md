@@ -31,6 +31,7 @@ on:
 jobs:
 
   versionist:
+    name: Run versionist
     if: "!contains(github.event.head_commit.author.name, 'versionist')"   # Ignore push events made by the service account
     runs-on: ubuntu-latest
     outputs:                                              # (optional) Only if you want to use them in next jobs
@@ -55,10 +56,10 @@ jobs:
     # You can now use any other action to package and distribute your new release (NPM, docker, etc)
     # If you set up the outputs you can use them here
     output:
-      needs: versionist
-      if: ${{ needs.versionist.outputs.updated}} == 'true'
-      runs-on: ubuntu-latest
       name: A job to echo versionist's outputs
+      needs: versionist
+      if: needs.versionist.outputs.updated == 'true'
+      runs-on: ubuntu-latest
       steps:
       - name: Echo version number
         run: echo "Version is ${{ needs.versionist.outputs.version }}"
