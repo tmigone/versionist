@@ -1,6 +1,6 @@
 # versionist GitHub action
 
-This action provides automatic Semver versioning and changelog generation. Useful to handle versioning in continuous delivery workflows that use NPM or Docker deployments.
+This action uses a service account to provide automatic Semver versioning and changelog generation. Useful to handle versioning in continuous delivery workflows that use NPM or Docker deployments for example.
  
 The following actions are taken sequentially:
 
@@ -13,27 +13,13 @@ Read more about the opinionated versioning here:
 - [versionist](https://github.com/balena-io/versionist)
 - [balena-versionist](https://github.com/balena-io/balena-versionist)
 
-## Inputs
-
-### `branch`
-
-**Not required** Name of the branch where versioning should be applied. Default: master.
-
-### `github_email`
-
-**Required** The email address to be associated with the generated commits.
-
-### `github_username`
-
-**Required** The username to be associated with the generated commits.
-
-### `github_token`
-
-**Required** The GitHub token to authenticate. Automatically set by `${{ secrets.GITHUB_TOKEN }}`. This is required to push the version update and tag.
-
 ## Example usage
 
-Here is a sample action workflow:
+### GitHub Service account
+First you'll need to create a GitHub service account and grant it `Collaborator` access to the target repository. This can be any GitHub account though we recommend to use a dedicated one just for this task. You'll need to take note of the account's email address, username and create a GitHub [Personal Access Token](https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token).
+
+### Configuring the workflow
+Next, configure your workflow. Here is an example:
 
 ```yaml
 name: Run versionist
@@ -43,25 +29,53 @@ on:
       - master
 
 jobs:
+
   versionist:
+    if: "!contains(github.event.head_commit.author.name, 'versionist')" # Ignore push events made by the service account
     runs-on: ubuntu-latest
     steps: 
     - name: Checkout project
       uses: actions/checkout@v2
       with:
         fetch-depth: 0                            # We need all commits and tags
+        persist-credentials: false                # Next step needs to use service account's token
     - name: Run versionist
       uses: tmigone/versionist@master
       with:
-        github_email: 'tomasmigone@gmail.com'
-        github_username: 'Tomás Migone'
-        github_token: ${{ secrets.GITHUB_TOKEN }} # This token is automatically provided by Actions, you do not need to create your own token
+        # Provide your versionist service account details
+        github_email: 'tmigone.versionist@gmail.com'
+        github_username: 'versionist'
+        github_token: ${{ secrets.GH_VERSIONIST_TOKEN }}
+
+    # You can now use any other action to package and distribute your new release (NPM, docker, etc)
 ```
 
-You should include at least one commit with a `Change-type: patch | minor | major` footer tag in the comments, example:
+### Tagging commits
+
+If you want to trigger the workflow you only need to include a `Change-type: patch | minor | major` footer tag in a commit's comments. Note that at least one commit needs to contain the `Change-type` footer tag, otherwise the workflow will exit.
+
+ A commit example:
 
 ```
 feature: Fixed a bug with xyz
 
 Change-type: patch
 ```
+
+## Inputs
+
+### `branch`
+
+**Not required** Name of the branch where versioning should be applied. Default: master.
+
+### `github_email`
+
+**Required** The service account's email address.
+
+### `github_username`
+
+**Required** The service account's username.
+
+### `github_token`
+
+**Required** A Personal Access Token for the GitHub service account. We recommend to set this using secrets, for example: `${{ secrets.GH_VERSIONIST_TOKEN }}`.

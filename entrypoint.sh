@@ -30,17 +30,17 @@ function check_required_inputs () {
   if [[ -z "$DRY_RUN" ]]; then
     if [[ -z "$INPUT_GITHUB_EMAIL" ]]; then
       echo "ERROR: INPUT_GITHUB_EMAIL is required!"
-      exit 0
+      exit 1
     fi
 
     if [[ -z "$INPUT_GITHUB_USERNAME" ]]; then
       echo "ERROR: INPUT_GITHUB_USERNAME is required!"
-      exit 0
+      exit 1
     fi
 
     if [[ -z "$INPUT_GITHUB_TOKEN" ]]; then
       echo "ERROR: INPUT_GITHUB_TOKEN is required!"
-      exit 0
+      exit 1
     fi
   fi
 }
@@ -68,13 +68,12 @@ function run_versionist () {
   git config --local user.email "$INPUT_GITHUB_EMAIL"
   git config --local user.name "$INPUT_GITHUB_USERNAME"
 
-
   # Check if there are changes with the "Change-type" footer
   create_tag_if_not_exists "$CURRENT_VERSION"
   local CHECK_CHANGE_TYPE=$(git log "$CURRENT_VERSION"..HEAD | grep "Change-type")
   if [[ -z "$CHECK_CHANGE_TYPE" ]]; then
     echo "No commits were annotated with a change type since version $CURRENT_VERSION. Exiting..."
-    exit 0
+    exit 1
   fi
 
   # Run versionist
