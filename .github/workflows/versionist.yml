@@ -28,7 +28,7 @@ jobs:
 
   output:
     needs: versionist
-    if: needs.versionist.outputs.updated == 'false'
+    if: needs.versionist.outputs.updated == 'true'
     runs-on: ubuntu-latest
     name: A job to echo versionist's outputs
     steps:
