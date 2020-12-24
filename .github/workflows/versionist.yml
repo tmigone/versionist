@@ -19,7 +19,7 @@ jobs:
         fetch-depth: 0
         persist-credentials: false
     - name: Run balena-versionist
-      id: versionist-step
+      id: versionist
       uses: ./
       with:
         github_email: 'tmigone.versionist@gmail.com'
