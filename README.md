@@ -31,15 +31,19 @@ on:
 jobs:
 
   versionist:
-    if: "!contains(github.event.head_commit.author.name, 'versionist')" # Ignore push events made by the service account
+    if: "!contains(github.event.head_commit.author.name, 'versionist')"   # Ignore push events made by the service account
     runs-on: ubuntu-latest
+    outputs:                                              # (optional) Only if you want to use them in next jobs
+      version: ${{ steps.versionist.outputs.version }}    # version: project's version after running versionist
+      updated: ${{ steps.versionist.outputs.updated }}    # updated: true if the version has been updated
     steps: 
     - name: Checkout project
       uses: actions/checkout@v2
       with:
-        fetch-depth: 0                            # We need all commits and tags
-        persist-credentials: false                # Next step needs to use service account's token
+        fetch-depth: 0                                    # We need all commits and tags
+        persist-credentials: false                        # Next step needs to use service account's token
     - name: Run versionist
+      id: versionist                                      # (optional) Only needed if using outputs
       uses: tmigone/versionist@master
       with:
         # Provide your versionist service account details
@@ -47,7 +51,20 @@ jobs:
         github_username: 'versionist'
         github_token: ${{ secrets.GH_VERSIONIST_TOKEN }}
 
+
     # You can now use any other action to package and distribute your new release (NPM, docker, etc)
+    # If you set up the outputs you can use them here
+    output:
+      needs: versionist
+      if: ${{ needs.versionist.outputs.updated}} == 'true'
+      runs-on: ubuntu-latest
+      name: A job to echo versionist's outputs
+      steps:
+      - name: Echo version number
+        run: echo "Version is ${{ needs.versionist.outputs.version }}"
+      - name: Echo updated
+        run: echo "Updated is ${{ needs.versionist.outputs.updated }}"
+
 ```
 
 ### Tagging commits

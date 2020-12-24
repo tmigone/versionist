@@ -26,13 +26,13 @@ jobs:
         github_username: 'versionist'
         github_token: ${{ secrets.GH_VERSIONIST_TOKEN }}
 
-  hello_world_job:
-    if: ${{ needs.versionist.outputs.updated}} == 'true'
+  output:
     needs: versionist
+    if: ${{ needs.versionist.outputs.updated}} == 'true'
     runs-on: ubuntu-latest
-    name: A job to say hello
+    name: A job to echo versionist's outputs
     steps:
-    - name: Get the output time
+    - name: Echo version number
       run: echo "Version is ${{ needs.versionist.outputs.version }}"
-    - name: Get the output time
-      run: echo "Version is ${{ needs.versionist.outputs.updated }}"
+    - name: Echo updated
+      run: echo "Updated is ${{ needs.versionist.outputs.updated }}"
