@@ -13,6 +13,16 @@ Read more about the opinionated versioning here:
 - [versionist](https://github.com/balena-io/versionist)
 - [balena-versionist](https://github.com/balena-io/balena-versionist)
 
+**Action's inputs and outputs**
+| Input / Output | Name | Description |
+| ------------- | ------------- | ------------- |
+| Input  | `branch` | **Not required** Name of the branch where versioning should be applied. Default: master. | 
+| Input  | `github_email` | **Required** The service account's email address. | 
+| Input  | `github_username` | **Required** The service account's username. | 
+| Input  | `github_token` | **Required** A Personal Access Token for the GitHub service account. We recommend to set this using secrets, for example: `${{ secrets.GH_VERSIONIST_TOKEN }}`. | 
+| Output  | `version` | The project's version after running versionist. |
+| Output  | `updated` | Returns `true` if the version was bumped by versionist, `false` otherwise. |
+
 ## Example usage
 
 ### GitHub Service account
@@ -83,21 +93,3 @@ Change-type: patch
 ### Branch protection
 
 Currently it's not possible to use versionist on branches that have branch protection enabled. It might be possible to do so if the repository is part of an organization and not a personal one, but I haven't tested it yet. 
-
-## Inputs
-
-### `branch`
-
-**Not required** Name of the branch where versioning should be applied. Default: master.
-
-### `github_email`
-
-**Required** The service account's email address.
-
-### `github_username`
-
-**Required** The service account's username.
-
-### `github_token`
-
-**Required** A Personal Access Token for the GitHub service account. We recommend to set this using secrets, for example: `${{ secrets.GH_VERSIONIST_TOKEN }}`.
