@@ -52,8 +52,8 @@ jobs:
         platforms: linux/amd64
         push: true
         tags: |
-          tmigone/versionist:latest
           tmigone/versionist:${{ needs.versionist.outputs.version }}
+          tmigone/versionist:latest
 
   output:
     name: A job to echo versionist's outputs
