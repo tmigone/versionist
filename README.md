@@ -1,5 +1,5 @@
 # versionist GitHub action
-![DockerHub](https://img.shields.io/docker/v/tmigone/versionist?sort=semver&&logo=docker&logoColor=2496ED&label=Docker+image&color=2496ED)
+![DockerHub](https://img.shields.io/docker/v/tmigone/versionist?sort=semver&logo=docker&logoColor=2496ED&label=Docker+image&color=2496ED&link=https://hub.docker.com/repository/docker/tmigone/versionist)
 
 This action uses a service account to provide automatic Semver versioning and changelog generation. Useful to handle versioning in continuous delivery workflows that use NPM or Docker deployments for example.
  
