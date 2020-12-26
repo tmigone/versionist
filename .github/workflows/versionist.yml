@@ -27,6 +27,34 @@ jobs:
         github_username: 'versionist'
         github_token: ${{ secrets.GH_VERSIONIST_TOKEN }}
 
+  dockerhub:
+    name: Publish Docker image to DockerHub
+    needs: versionist
+    if: needs.versionist.outputs.updated == 'true'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+    - name: Login to DockerHub
+      uses: docker/login-action@v1
+      with:
+        username: tmigone
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+    - name: Build and push
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        file: ./Dockerfile.baseimage
+        platforms: linux/amd64
+        push: true
+        tags: |
+          tmigone/versionist:latest
+          tmigone/versionist:${{ needs.versionist.outputs.version }}
+
   output:
     name: A job to echo versionist's outputs
     needs: versionist
