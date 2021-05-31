@@ -68,11 +68,23 @@ function run_versionist () {
   git config --local user.email "$INPUT_GITHUB_EMAIL"
   git config --local user.name "$INPUT_GITHUB_USERNAME"
 
+  # Create tag for current version if it doesn't exist
+  TAG_CREATED=$(create_tag_if_not_exists "$CURRENT_VERSION")
+  
   # Check if there are changes with the "Change-type" footer
-  create_tag_if_not_exists "$CURRENT_VERSION"
+  # If we just created the tag then there are no changes but we need to push the tag and exit. 
+  # Job will need to be re-run in this case.
   local CHECK_CHANGE_TYPE=$(git log "$CURRENT_VERSION"..HEAD | grep "Change-type")
   if [[ -z "$CHECK_CHANGE_TYPE" ]]; then
     echo "No commits were annotated with a change type since version $CURRENT_VERSION. Exiting..."
+
+    if [[ -n "$TAG_CREATED" ]]; then
+      if [[ -z $DRY_RUN ]]; then
+        echo "Pushing created tag. Job will exit. Please re-run."
+        git push "${REPO_URL}" HEAD:${INPUT_BRANCH} --follow-tags
+      fi
+    fi
+
     exit 0
   fi
 
