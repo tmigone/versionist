@@ -80,8 +80,9 @@ function run_versionist () {
 
     if [[ -n "$TAG_CREATED" ]]; then
       if [[ -z $DRY_RUN ]]; then
-        echo "Pushing created tag. Job will exit. Please re-run."
+        echo "A tag for $CURRENT_VERSION was just created. Pushing it now..."
         git push "${REPO_URL}" HEAD:${INPUT_BRANCH} --follow-tags
+        echo "Success! The job will exit now. Versioning enabled for next runs (not this one)."
       fi
     fi
 
