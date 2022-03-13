@@ -64,18 +64,18 @@ jobs:
         github_token: ${{ secrets.GH_VERSIONIST_TOKEN }}
 
 
-    # You can now use any other action to package and distribute your new release (NPM, docker, etc)
-    # If you set up the outputs you can use them here
-    output:
-      name: A job to echo versionist's outputs
-      needs: versionist
-      if: needs.versionist.outputs.updated == 'true'
-      runs-on: ubuntu-latest
-      steps:
-      - name: Echo version number
-        run: echo "Version is ${{ needs.versionist.outputs.version }}"
-      - name: Echo updated
-        run: echo "Updated is ${{ needs.versionist.outputs.updated }}"
+  # You can now use any other action to package and distribute your new release (NPM, docker, etc)
+  # If you set up the outputs you can use them here
+  output:
+    name: A job to echo versionist's outputs
+    needs: versionist
+    if: needs.versionist.outputs.updated == 'true'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Echo version number
+      run: echo "Version is ${{ needs.versionist.outputs.version }}"
+    - name: Echo updated
+      run: echo "Updated is ${{ needs.versionist.outputs.updated }}"
 
 ```
 
